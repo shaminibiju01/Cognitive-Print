@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CognitivePrint: Mental Health Pattern Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f9f7f3; --paper:#fdfcfa; --ink:#1c1c1c; --ink-light:#5a5a5a;
+  --ink-dim:#aaa; --rule:#e5e1d8; --red:#b91c1c; --blue:#1d4ed8; --purple:#5b21b6;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Lora',Georgia,serif;background:var(--bg);color:var(--ink);}
+
+.topbar{height:52px;background:var(--paper);border-bottom:1px solid var(--rule);display:flex;align-items:center;padding:0 40px;gap:32px;box-shadow:0 1px 6px rgba(0,0,0,0.05);position:sticky;top:0;z-index:100;}
+.logo{font-family:'Lora',serif;font-size:17px;font-weight:600;letter-spacing:-0.3px;color:var(--ink);text-decoration:none;}
+.logo em{font-style:italic;color:var(--red);}
+.nav{display:flex;gap:24px;margin-left:auto;align-items:center;}
+.nav a{font-family:'Inter',sans-serif;font-size:12px;color:var(--ink-dim);text-decoration:none;transition:color 0.2s;}
+.nav a:hover{color:var(--ink);}
+.nav-btn{background:var(--ink);color:var(--paper)!important;padding:7px 18px;border-radius:7px;font-weight:600!important;}
+.nav-btn:hover{background:#2a2a2a!important;}
+
+
+.hero{max-width:800px;margin:0 auto;padding:100px 40px 80px;text-align:center;}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--purple);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px;display:block;}
+.hero h1{font-family:'Lora',serif;font-size:52px;font-weight:600;line-height:1.12;letter-spacing:-1px;margin-bottom:24px;color:var(--ink);}
+.hero h1 em{font-style:italic;color:var(--red);}
+.hero-sub{font-family:'Inter',sans-serif;font-size:16px;color:var(--ink-light);line-height:1.7;max-width:520px;margin:0 auto 40px;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-primary{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;background:var(--ink);color:var(--paper);border:none;padding:14px 28px;border-radius:8px;cursor:pointer;text-decoration:none;transition:background 0.2s;}
+.btn-primary:hover{background:#2a2a2a;}
+.btn-secondary{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;background:none;color:var(--ink);border:1px solid var(--rule);padding:14px 28px;border-radius:8px;cursor:pointer;text-decoration:none;transition:border-color 0.2s;}
+.btn-secondary:hover{border-color:var(--ink-dim);}
+
+.stats{display:flex;justify-content:center;gap:0;margin:80px auto;max-width:700px;border:1px solid var(--rule);border-radius:14px;background:var(--paper);overflow:hidden;}
+.stat{flex:1;padding:32px 24px;text-align:center;border-right:1px solid var(--rule);}
+.stat:last-child{border-right:none;}
+.stat-num{font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:500;color:var(--ink);display:block;margin-bottom:6px;}
+.stat-label{font-family:'Inter',sans-serif;font-size:12px;color:var(--ink-dim);}
+
+.features{max-width:900px;margin:0 auto;padding:0 40px 100px;}
+.features-title{font-family:'Lora',serif;font-size:28px;font-weight:600;text-align:center;margin-bottom:48px;letter-spacing:-0.4px;}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.feature-card{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:28px 24px;}
+.feature-icon{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--purple);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;display:block;}
+.feature-title{font-family:'Lora',serif;font-size:17px;font-weight:600;margin-bottom:8px;letter-spacing:-0.2px;}
+.feature-body{font-family:'Inter',sans-serif;font-size:13px;color:var(--ink-light);line-height:1.6;}
+
+.how{background:var(--paper);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:80px 40px;}
+.how-inner{max-width:700px;margin:0 auto;}
+.how-title{font-family:'Lora',serif;font-size:28px;font-weight:600;text-align:center;margin-bottom:48px;letter-spacing:-0.4px;}
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:24px;padding:24px 0;border-bottom:1px solid var(--rule);}
+.step:last-child{border-bottom:none;}
+.step-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-dim);width:24px;flex-shrink:0;padding-top:2px;}
+.step-content{}
+.step-title{font-family:'Lora',serif;font-size:17px;font-weight:600;margin-bottom:4px;}
+.step-body{font-family:'Inter',sans-serif;font-size:13px;color:var(--ink-light);line-height:1.6;}
+
+.cta{max-width:600px;margin:80px auto;padding:0 40px;text-align:center;}
+.cta h2{font-family:'Lora',serif;font-size:32px;font-weight:600;letter-spacing:-0.5px;margin-bottom:14px;}
+.cta p{font-family:'Inter',sans-serif;font-size:14px;color:var(--ink-light);margin-bottom:32px;line-height:1.6;}
+
+.footer{border-top:1px solid var(--rule);padding:24px 40px;display:flex;align-items:center;justify-content:space-between;font-family:'Inter',sans-serif;font-size:11px;color:var(--ink-dim);}
+.footer-logo{font-family:'Lora',serif;font-size:14px;font-weight:600;color:var(--ink);}
+.footer-logo em{font-style:italic;color:var(--red);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="logo" href="index.html">Cognitive<em>Print</em></a>
+  <nav class="nav">
+   <a href="about.html">About</a>
+   <a href="#" onclick="sessionStorage.clear();location.reload();">Reset</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="journal.html" class="nav-btn">Start journaling →</a>
+  </nav>
+</div>
+
+<div class="hero">
+  <span class="hero-tag">Mental health · NLP · Graph theory</span>
+  <h1>Your journal entries reveal<br><em>hidden patterns</em></h1>
+  <p class="hero-sub">CognitivePrint uses natural language processing and graph theory to detect cognitive distortions in your writing, before they become a crisis.</p>
+  <div class="hero-btns">
+    <a href="journal.html" class="btn-primary">▶ &nbsp;Start journaling</a>
+    <a href="about.html" class="btn-secondary">How it works</a>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat">
+    <span class="stat-num">1 in 5</span>
+    <span class="stat-label">Americans experience mental illness each year</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">11 years</span>
+    <span class="stat-label">Average delay between symptoms and treatment</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">4 patterns</span>
+    <span class="stat-label">Cognitive distortions detected by our model</span>
+  </div>
+</div>
+
+<div class="features">
+  <div class="features-title">What CognitivePrint detects</div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">01 · NLP</span>
+      <div class="feature-title">Emotion classification</div>
+      <p class="feature-body">A fine-tuned RoBERTa model classifies each entry into 7 emotions with confidence scores.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">02 · Graph theory</span>
+      <div class="feature-title">Cognitive drift detection</div>
+      <p class="feature-body">NetworkX builds a time-series graph of your entries. BFS traversal detects when distortion patterns cluster.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">03 · Scoring</span>
+      <div class="feature-title">Health index</div>
+      <p class="feature-body">A composite 0–100 score weighing distortion frequency, sentiment, and trajectory over your last 7 entries.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">04 · Pattern</span>
+      <div class="feature-title">Catastrophizing</div>
+      <p class="feature-body">Detecting language like "always", "never", "worst", "ruined" which are signs of worst-case thinking.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">05 · Pattern</span>
+      <div class="feature-title">Black & white thinking</div>
+      <p class="feature-body">All-or-nothing language: "everything", "nothing", "everyone", "failure", "perfect".</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">06 · Pattern</span>
+      <div class="feature-title">Mind reading & self-blame</div>
+      <p class="feature-body">Assuming others' thoughts or taking responsibility for things outside your control.</p>
+    </div>
+  </div>
+</div>
+
+<div class="how">
+  <div class="how-inner">
+    <div class="how-title">How it works</div>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">①</span>
+        <div class="step-content">
+          <div class="step-title">Write a journal entry</div>
+          <p class="step-body">Just a sentence or two about how you're feeling. No structure required, so just write naturally.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">②</span>
+        <div class="step-content">
+          <div class="step-title">NLP pipeline analyzes your text</div>
+          <p class="step-body">spaCy extracts linguistic features. A fine-tuned RoBERTa model classifies your emotion with confidence scoring. A rule-based distortion detector flags cognitive patterns.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">③</span>
+        <div class="step-content">
+          <div class="step-title">Graph engine builds your pattern map</div>
+          <p class="step-body">Each entry becomes a node. NetworkX connects them over time. BFS traversal detects drift, which is when your patterns worsen across multiple entries.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">④</span>
+        <div class="step-content">
+          <div class="step-title">Your dashboard updates in real time</div>
+          <p class="step-body">A force-directed D3.js graph visualizes your cognitive state over time. Your health index updates. Early warning flags surface if patterns worsen.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cta">
+  <h2>Start tracking your patterns today</h2>
+  <p>It takes 30 seconds. Write one entry and see what our pipeline finds.</p>
+  <a href="journal.html" class="btn-primary">▶ &nbsp;Write your first entry</a>
+</div>
+
+<div class="footer">
+  <span class="footer-logo">Cognitive<em>Print</em></span>
+  <span>Mental health pattern analysis · Built with spaCy, NetworkX, D3.js</span>
+</div>
+
+</body>
+</html>

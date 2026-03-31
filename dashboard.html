@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CognitivePrint — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+:root {
+  --bg:#f9f7f3; --paper:#fdfcfa; --ink:#1c1c1c; --ink-light:#5a5a5a;
+  --ink-dim:#aaa; --rule:#e5e1d8; --red:#b91c1c; --purple:#5b21b6;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Lora',Georgia,serif;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.topbar{height:52px;background:var(--paper);border-bottom:1px solid var(--rule);display:flex;align-items:center;padding:0 32px;gap:14px;box-shadow:0 1px 6px rgba(0,0,0,0.05);flex-shrink:0;z-index:100;}
+.logo{font-family:'Lora',serif;font-size:17px;font-weight:600;letter-spacing:-0.3px;color:var(--ink);text-decoration:none;}
+.logo em{font-style:italic;color:var(--red);}
+.nav{display:flex;gap:24px;margin-left:auto;align-items:center;}
+.nav a{font-family:'Inter',sans-serif;font-size:12px;color:var(--ink-dim);text-decoration:none;}
+.nav a:hover{color:var(--ink);}
+.nav-btn{background:var(--ink);color:var(--paper)!important;padding:7px 18px;border-radius:7px;font-weight:600!important;}
+.score-pill{font-family:'JetBrains Mono',monospace;font-size:11px;padding:3px 12px;border-radius:20px;border:1px solid;}
+
+.content{flex:1;display:flex;overflow:hidden;}
+.sidebar{width:300px;background:var(--paper);border-right:1px solid var(--rule);padding:20px;overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;gap:20px;}
+.s-label{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-dim);margin-bottom:10px;}
+.health-num{font-family:'Inter',sans-serif;font-size:40px;font-weight:700;line-height:1;}
+.bar-track{background:var(--rule);border-radius:99px;height:4px;margin-top:8px;}
+.bar-fill{height:100%;border-radius:99px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);}
+.health-status{font-family:'JetBrains Mono',monospace;font-size:10px;margin-top:5px;}
+
+.entry-card{background:var(--bg);border:1px solid var(--rule);border-radius:9px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:border-color 0.2s;}
+.entry-card:hover,.entry-card.selected{border-color:var(--ink-dim);}
+.e-date{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);margin-bottom:3px;}
+.e-emotion{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;margin-bottom:5px;}
+.e-text{font-family:'Lora',serif;font-size:11px;font-style:italic;color:var(--ink-light);line-height:1.5;margin-bottom:6px;}
+.e-tags{display:flex;flex-wrap:wrap;gap:3px;}
+.e-tag{font-family:'Inter',sans-serif;font-size:9px;background:rgba(185,28,28,0.07);color:var(--red);border:1px solid rgba(185,28,28,0.15);border-radius:3px;padding:1px 6px;}
+
+.new-btn{width:100%;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;background:var(--ink);color:var(--paper);border:none;padding:11px;border-radius:8px;cursor:pointer;text-decoration:none;display:block;text-align:center;}
+.new-btn:hover{background:#2a2a2a;}
+
+.leg-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;}
+.leg-item{display:flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;font-size:11px;color:var(--ink-light);}
+.leg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+.graph-area{flex:1;position:relative;overflow:hidden;}
+.graph-label{position:absolute;top:16px;left:20px;font-family:'Inter',sans-serif;font-size:11px;color:var(--ink-dim);}
+svg{width:100%;height:100%;}
+
+.tip{position:fixed;z-index:999;background:#1c1c1c;color:#f5f5f5;font-family:'Inter',sans-serif;font-size:12px;line-height:1.6;padding:12px 16px;border-radius:9px;max-width:240px;pointer-events:none;opacity:0;transition:opacity 0.15s;box-shadow:0 8px 28px rgba(0,0,0,0.3);}
+.tip.show{opacity:1;}
+.tip-name{font-size:13px;font-weight:700;font-family:'Lora',serif;margin-bottom:2px;}
+.tip-sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:#fb923c;margin-bottom:5px;}
+.tip-body{font-size:11px;color:#ccc;}
+
+.footer{height:46px;background:var(--paper);border-top:1px solid var(--rule);display:flex;align-items:center;padding:0 28px;gap:14px;font-family:'Inter',sans-serif;font-size:11px;color:var(--ink-dim);flex-shrink:0;}
+.f-label{font-size:9.5px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
+.f-track{flex:1;max-width:260px;height:14px;background:var(--rule);border-radius:4px;overflow:hidden;display:flex;}
+.f-neg{height:100%;background:var(--red);width:0%;transition:width 1.4s cubic-bezier(0.4,0,0.2,1);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:white;white-space:nowrap;overflow:hidden;}
+.f-pos{height:100%;flex:1;background:#93c5fd;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:white;}
+.f-stat{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);}
+
+.empty{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:var(--ink-dim);}
+.empty-icon{font-size:40px;margin-bottom:12px;}
+.empty p{font-family:'Inter',sans-serif;font-size:13px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="logo" href="index.html">Cognitive<em>Print</em></a>
+  <span style="font-family:'Inter',sans-serif;font-size:12px;color:var(--ink-dim);">/ Dashboard</span>
+  <div class="nav">
+    <span class="s-label" style="margin:0;">Health index</span>
+    <span class="score-pill" id="topPill" style="color:#27AE60;border-color:rgba(39,174,96,0.3);background:rgba(39,174,96,0.07);">—</span>
+    <a href="journal.html" class="nav-btn">+ New entry</a>
+  </div>
+</div>
+
+<div class="content">
+  <div class="sidebar">
+    <div>
+      <div class="s-label">Cognitive Health Index</div>
+      <div class="health-num" id="healthNum">—</div>
+      <div class="bar-track"><div class="bar-fill" id="healthBar" style="width:0%;background:#27AE60;"></div></div>
+      <div class="health-status" id="healthStatus">—</div>
+    </div>
+    <div>
+      <div class="s-label">Journal entries</div>
+      <div id="entryList"></div>
+      <a href="journal.html" class="new-btn">+ Write new entry</a>
+    </div>
+    <div>
+      <div class="s-label">Emotion legend</div>
+      <div class="leg-grid" id="legend"></div>
+    </div>
+  </div>
+  <div class="graph-area">
+    <div class="graph-label" id="graphLabel">Cognitive pattern graph · 0 entries</div>
+    <svg id="graphSvg"></svg>
+    <div class="empty" id="empty">
+      <div class="empty-icon">◎</div>
+      <p>No entries yet.<br>Write your first journal entry to begin.</p>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <span class="f-label">Sentiment</span>
+  <div class="f-track">
+    <div class="f-neg" id="fNeg"></div>
+    <div class="f-pos" id="fPos">positive</div>
+  </div>
+  <span class="f-stat" id="fStat"></span>
+</div>
+
+<div class="tip" id="tip"></div>
+
+<script>
+const EMOTION_COLORS = {
+  sadness:"#4A90D9",fear:"#9B59B6",anger:"#E74C3C",
+  disgust:"#E67E22",joy:"#27AE60",surprise:"#D4AC0D",neutral:"#888"
+};
+const DISTORTION_LABELS = {
+  catastrophizing:"Catastrophizing",black_and_white:"Black & White",
+  mind_reading:"Mind Reading",self_blame:"Self Blame"
+};
+
+// Load from sessionStorage
+const entries = JSON.parse(sessionStorage.getItem("cp_entries")||"[]");
+const health  = parseFloat(sessionStorage.getItem("cp_health")||"1.0");
+const graph   = JSON.parse(sessionStorage.getItem("cp_graph")||'{"nodes":[],"edges":[]}');
+
+function init() {
+  renderHealth();
+  renderEntries();
+  renderLegend();
+  if (graph.nodes.length > 0) {
+    document.getElementById("empty").style.display = "none";
+    drawGraph();
+  }
+  updateFooter();
+}
+
+function renderHealth() {
+  const score = Math.round(health * 100);
+  const color = health > 0.7 ? "#27AE60" : health > 0.4 ? "#E67E22" : "#b91c1c";
+  const label = health > 0.7 ? "Healthy" : health > 0.4 ? "Moderate" : "Needs Attention";
+  document.getElementById("healthNum").textContent = score;
+  document.getElementById("healthNum").style.color = color;
+  document.getElementById("healthBar").style.width = score + "%";
+  document.getElementById("healthBar").style.background = color;
+  document.getElementById("healthStatus").textContent = label;
+  document.getElementById("healthStatus").style.color = color;
+  document.getElementById("topPill").textContent = score + "/100";
+  document.getElementById("topPill").style.color = color;
+}
+
+function renderEntries() {
+  const list = document.getElementById("entryList");
+  list.innerHTML = "";
+  if (entries.length === 0) { list.innerHTML = '<p style="font-family:\'Inter\',sans-serif;font-size:12px;color:var(--ink-dim);margin-bottom:12px;">No entries yet.</p>'; return; }
+  [...entries].reverse().forEach((e,i) => {
+    const c = EMOTION_COLORS[e.emotion]||"#888";
+    const div = document.createElement("div");
+    div.className = "entry-card" + (i===0?" selected":"");
+    div.innerHTML = `
+      <div class="e-date">${e.date}</div>
+      <div class="e-emotion" style="color:${c}">● ${e.emotion} <span style="font-size:9px;color:var(--ink-dim);font-family:'JetBrains Mono',monospace;">${Math.round(e.emotion_score*100)}%</span></div>
+      <div class="e-text">"${e.text.slice(0,70)}${e.text.length>70?"…":""}"</div>
+      <div class="e-tags">${(e.distortions||[]).map(d=>`<span class="e-tag">${DISTORTION_LABELS[d]||d}</span>`).join("")}</div>`;
+    list.appendChild(div);
+  });
+  document.getElementById("graphLabel").textContent = `Cognitive pattern graph · ${entries.length} ${entries.length===1?"entry":"entries"}`;
+}
+
+function renderLegend() {
+  document.getElementById("legend").innerHTML = Object.entries(EMOTION_COLORS).map(([e,c])=>
+    `<div class="leg-item"><div class="leg-dot" style="background:${c}"></div>${e}</div>`
+  ).join("");
+}
+
+function drawGraph() {
+  const svg = d3.select("#graphSvg");
+  svg.selectAll("*").remove();
+  const w = document.getElementById("graphSvg").clientWidth;
+  const h = document.getElementById("graphSvg").clientHeight;
+  const nodes = graph.nodes.map(d=>({...d}));
+  const edges = graph.edges.map(d=>({...d}));
+
+  const sim = d3.forceSimulation(nodes)
+    .force("link",d3.forceLink(edges).id(d=>d.id).distance(160))
+    .force("charge",d3.forceManyBody().strength(-600))
+    .force("center",d3.forceCenter(w/2,h/2))
+    .force("collide",d3.forceCollide(50));
+
+  const link = svg.append("g").selectAll("line").data(edges).enter().append("line")
+    .attr("stroke","#e5e1d8").attr("stroke-width",1.5);
+
+  const node = svg.append("g").selectAll("g").data(nodes).enter().append("g")
+    .style("cursor","pointer")
+    .on("mouseover",showTip).on("mousemove",moveTip).on("mouseout",hideTip);
+
+  node.append("circle").attr("r",34).attr("fill","var(--paper)")
+    .attr("stroke",d=>EMOTION_COLORS[d.emotion]||"#ccc").attr("stroke-width",2);
+  node.append("circle").attr("r",26)
+    .attr("fill",d=>EMOTION_COLORS[d.emotion]||"#ccc").attr("opacity",0.1);
+  node.append("text").text(d=>d.emotion.slice(0,3).toUpperCase())
+    .attr("text-anchor","middle").attr("dy","-0.15em")
+    .attr("fill",d=>EMOTION_COLORS[d.emotion]).attr("font-size",10).attr("font-weight","600")
+    .attr("font-family","Inter,sans-serif").style("pointer-events","none");
+  node.append("text").text(d=>d.date.slice(5))
+    .attr("text-anchor","middle").attr("dy","1.1em")
+    .attr("fill","#aaa").attr("font-size",10).attr("font-family","Inter,sans-serif")
+    .style("pointer-events","none");
+
+  sim.on("tick",()=>{
+    link.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y)
+        .attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
+    node.attr("transform",d=>`translate(${d.x},${d.y})`);
+  });
+}
+
+function updateFooter() {
+  const neg = entries.filter(e=>["sadness","fear","anger","disgust"].includes(e.emotion)).length;
+  const pct = entries.length ? Math.round((neg/entries.length)*100) : 0;
+  document.getElementById("fNeg").style.width = pct+"%";
+  document.getElementById("fNeg").textContent = pct>15?`neg ${pct}%`:"";
+  document.getElementById("fPos").textContent = `pos ${100-pct}%`;
+  document.getElementById("fStat").textContent = neg>0?`${neg} negative ${neg===1?"entry":"entries"}`:"";
+}
+
+const tip = document.getElementById("tip");
+function showTip(event,d) {
+  tip.innerHTML = `<div class="tip-name">${d.date}</div><div class="tip-sub">${d.emotion} · ${Math.round(d.emotion_score*100)}%</div><div class="tip-body">"${d.text.slice(0,100)}${d.text.length>100?"…":""}"${d.distortions&&d.distortions.length?`<br><br>${d.distortions.map(x=>DISTORTION_LABELS[x]||x).join(", ")}`:""}`;
+  tip.classList.add("show"); moveTip(event);
+}
+function moveTip(event) {
+  let x=event.clientX+16,y=event.clientY-12;
+  if(x+260>window.innerWidth) x=event.clientX-266;
+  tip.style.left=x+"px"; tip.style.top=y+"px";
+}
+function hideTip(){tip.classList.remove("show");}
+
+init();
+</script>
+</body>
+</html>

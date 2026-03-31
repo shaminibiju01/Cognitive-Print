@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CognitivePrint — Journal</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f9f7f3; --paper:#fdfcfa; --ink:#1c1c1c; --ink-light:#5a5a5a;
+  --ink-dim:#aaa; --rule:#e5e1d8; --red:#b91c1c; --purple:#5b21b6;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Lora',Georgia,serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;}
+.topbar{height:52px;background:var(--paper);border-bottom:1px solid var(--rule);display:flex;align-items:center;padding:0 40px;gap:32px;box-shadow:0 1px 6px rgba(0,0,0,0.05);position:sticky;top:0;z-index:100;}
+.logo{font-family:'Lora',serif;font-size:17px;font-weight:600;letter-spacing:-0.3px;color:var(--ink);text-decoration:none;}
+.logo em{font-style:italic;color:var(--red);}
+.nav{display:flex;gap:24px;margin-left:auto;align-items:center;}
+.nav a{font-family:'Inter',sans-serif;font-size:12px;color:var(--ink-dim);text-decoration:none;transition:color 0.2s;}
+.nav a:hover{color:var(--ink);}
+.nav-btn{background:var(--ink);color:var(--paper)!important;padding:7px 18px;border-radius:7px;font-weight:600!important;}
+.main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 20px;}
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:14px;padding:48px 52px;max-width:580px;width:100%;box-shadow:0 4px 28px rgba(0,0,0,0.07);}
+.card-title{font-family:'Lora',serif;font-size:24px;font-weight:600;letter-spacing:-0.4px;margin-bottom:8px;}
+.card-sub{font-family:'Inter',sans-serif;font-size:13px;color:var(--ink-light);line-height:1.6;margin-bottom:32px;}
+.input-label{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--ink-light);display:block;margin-bottom:8px;}
+.date-row{display:flex;gap:10px;margin-bottom:16px;}
+.date-input{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-radius:7px;padding:8px 12px;outline:none;transition:border-color 0.2s;}
+.date-input:focus{border-color:var(--purple);}
+textarea{width:100%;min-height:160px;font-family:'Lora',serif;font-size:15px;line-height:1.8;color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-radius:8px;padding:14px 16px;resize:vertical;outline:none;transition:border-color 0.2s;margin-bottom:10px;font-style:italic;}
+textarea:focus{border-color:var(--purple);}
+textarea::placeholder{color:var(--ink-dim);}
+.char-count{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);text-align:right;margin-bottom:24px;}
+.btn{width:100%;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.4px;background:var(--ink);color:var(--paper);border:none;padding:14px;border-radius:8px;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn:hover{background:#2a2a2a;}
+.processing{display:none;flex-direction:column;align-items:center;gap:18px;text-align:center;padding:12px 0;}
+.processing.show{display:flex;}
+.spinner{width:34px;height:34px;border:2.5px solid var(--rule);border-top-color:var(--red);border-radius:50%;animation:spin 0.75s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.proc-title{font-family:'Inter',sans-serif;font-size:14px;font-weight:600;color:var(--ink);}
+.footer{border-top:1px solid var(--rule);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;font-family:'Inter',sans-serif;font-size:11px;color:var(--ink-dim);}
+.footer-logo{font-family:'Lora',serif;font-size:14px;font-weight:600;color:var(--ink);}
+.footer-logo em{font-style:italic;color:var(--red);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="logo" href="index.html">Cognitive<em>Print</em></a>
+  <nav class="nav">
+    <a href="about.html">About</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="journal.html" class="nav-btn">New entry</a>
+  </nav>
+</div>
+
+<div class="main">
+  <div class="card">
+    <div id="formContent">
+      <div class="card-title">New journal entry</div>
+      <div class="card-sub">Write freely about how you're feeling. Our NLP pipeline will analyze your entry for emotional patterns and cognitive distortions.</div>
+      <label class="input-label">Date</label>
+      <div class="date-row">
+        <input class="date-input" type="date" id="entryDate" />
+      </div>
+      <label class="input-label">Your entry</label>
+      <textarea id="entryText" placeholder="Write freely… what's on your mind today?" oninput="updateCount()"></textarea>
+      <div class="char-count" id="charCount">0 characters</div>
+      <button class="btn" onclick="analyze()">▶ &nbsp;Analyze entry</button>
+    </div>
+    <div class="processing" id="processingView">
+      <div class="spinner"></div>
+      <div class="proc-title">Analyzing your entry…</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <span class="footer-logo">Cognitive<em>Print</em></span>
+  <span>spaCy · RoBERTa · NetworkX · D3.js</span>
+</div>
+
+<script>
+document.getElementById("entryDate").value = new Date().toISOString().slice(0,10);
+
+function updateCount() {
+  const n = document.getElementById("entryText").value.length;
+  document.getElementById("charCount").textContent = n + " character" + (n===1?"":"s");
+}
+
+async function analyze() {
+  const text = document.getElementById("entryText").value.trim();
+  const date = document.getElementById("entryDate").value;
+  if (!text) {
+    document.getElementById("entryText").style.borderColor = "var(--red)";
+    setTimeout(() => document.getElementById("entryText").style.borderColor = "var(--rule)", 1500);
+    return;
+  }
+  document.getElementById("formContent").style.display = "none";
+  document.getElementById("processingView").classList.add("show");
+  try {
+    const res = await fetch("http://127.0.0.1:5000/analyze", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({text, date})
+    });
+    const data = await res.json();
+    sessionStorage.setItem("cp_result", JSON.stringify(data));
+    sessionStorage.setItem("cp_entries", JSON.stringify(
+      JSON.parse(sessionStorage.getItem("cp_entries")||"[]").concat([data.entry])
+    ));
+    sessionStorage.setItem("cp_health", data.health_score);
+    sessionStorage.setItem("cp_graph", JSON.stringify(data.graph));
+    window.location.href = "dashboard.html";
+  } catch(e) {
+    alert("Backend not running! Make sure python app.py is running in your terminal.");
+    document.getElementById("formContent").style.display = "";
+    document.getElementById("processingView").classList.remove("show");
+  }
+}
+</script>
+</body>
+</html>

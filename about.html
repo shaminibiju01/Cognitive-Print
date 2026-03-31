@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CognitivePrint — About</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f9f7f3;--paper:#fdfcfa;--ink:#1c1c1c;--ink-light:#5a5a5a;--ink-dim:#aaa;--rule:#e5e1d8;--red:#b91c1c;--purple:#5b21b6;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Lora',Georgia,serif;background:var(--bg);color:var(--ink);}
+.topbar{height:52px;background:var(--paper);border-bottom:1px solid var(--rule);display:flex;align-items:center;padding:0 40px;gap:32px;box-shadow:0 1px 6px rgba(0,0,0,0.05);position:sticky;top:0;z-index:100;}
+.logo{font-family:'Lora',serif;font-size:17px;font-weight:600;letter-spacing:-0.3px;color:var(--ink);text-decoration:none;}
+.logo em{font-style:italic;color:var(--red);}
+.nav{display:flex;gap:24px;margin-left:auto;align-items:center;}
+.nav a{font-family:'Inter',sans-serif;font-size:12px;color:var(--ink-dim);text-decoration:none;}
+.nav a:hover{color:var(--ink);}
+.nav-btn{background:var(--ink);color:var(--paper)!important;padding:7px 18px;border-radius:7px;font-weight:600!important;}
+
+.hero{max-width:680px;margin:0 auto;padding:80px 40px 60px;}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--purple);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;display:block;}
+.hero h1{font-family:'Lora',serif;font-size:40px;font-weight:600;line-height:1.15;letter-spacing:-0.6px;margin-bottom:20px;}
+.hero-sub{font-family:'Inter',sans-serif;font-size:15px;color:var(--ink-light);line-height:1.7;}
+
+.body-content{max-width:680px;margin:0 auto;padding:0 40px 100px;}
+.section{margin-bottom:56px;}
+.section-head{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ink-dim);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--rule);}
+.section h2{font-family:'Lora',serif;font-size:22px;font-weight:600;letter-spacing:-0.3px;margin-bottom:12px;}
+.section p{font-family:'Inter',sans-serif;font-size:14px;color:var(--ink-light);line-height:1.8;margin-bottom:14px;}
+.section p:last-child{margin-bottom:0;}
+
+.distortion-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;}
+.distortion-card{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:20px;}
+.d-name{font-family:'Lora',serif;font-size:15px;font-weight:600;margin-bottom:6px;}
+.d-body{font-family:'Inter',sans-serif;font-size:12px;color:var(--ink-light);line-height:1.6;margin-bottom:10px;}
+.d-example{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);background:rgba(185,28,28,0.05);border:1px solid rgba(185,28,28,0.1);border-radius:5px;padding:6px 10px;line-height:1.5;}
+
+.tech-stack{display:flex;flex-direction:column;gap:0;border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:20px;}
+.tech-row{display:flex;align-items:center;gap:16px;padding:14px 18px;border-bottom:1px solid var(--rule);background:var(--paper);}
+.tech-row:last-child{border-bottom:none;}
+.tech-name{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--purple);width:130px;flex-shrink:0;}
+.tech-desc{font-family:'Inter',sans-serif;font-size:12px;color:var(--ink-light);}
+
+.cta-box{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:32px;text-align:center;margin-top:48px;}
+.cta-box h3{font-family:'Lora',serif;font-size:22px;font-weight:600;margin-bottom:10px;}
+.cta-box p{font-family:'Inter',sans-serif;font-size:13px;color:var(--ink-light);margin-bottom:24px;}
+.btn{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;background:var(--ink);color:var(--paper);border:none;padding:12px 28px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-block;}
+.btn:hover{background:#2a2a2a;}
+
+.footer{border-top:1px solid var(--rule);padding:24px 40px;display:flex;align-items:center;justify-content:space-between;font-family:'Inter',sans-serif;font-size:11px;color:var(--ink-dim);}
+.footer-logo{font-family:'Lora',serif;font-size:14px;font-weight:600;color:var(--ink);}
+.footer-logo em{font-style:italic;color:var(--red);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="logo" href="index.html">Cognitive<em>Print</em></a>
+  <nav class="nav">
+    <a href="about.html">About</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="journal.html" class="nav-btn">Start journaling →</a>
+  </nav>
+</div>
+
+<div class="hero">
+  <span class="hero-tag">The science</span>
+  <h1>What are cognitive distortions?</h1>
+  <p class="hero-sub">Cognitive distortions are irrational thought patterns that reinforce negative thinking. They were first identified by psychiatrist Aaron Beck in the 1960s as core features of depression and anxiety — and they show up in our language before we even notice them.</p>
+</div>
+
+<div class="body-content">
+
+  <div class="section">
+    <div class="section-head">The problem</div>
+    <h2>Mental health crises don't happen overnight</h2>
+    <p>The average delay between the onset of mental health symptoms and receiving treatment is 11 years. By the time someone seeks help, patterns of distorted thinking have often become deeply entrenched.</p>
+    <p>CognitivePrint is built on a simple idea: if we can detect these patterns early — in the language people use every day — we can surface warning signs before they become a crisis.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-head">What we detect</div>
+    <h2>Four cognitive distortion patterns</h2>
+    <div class="distortion-grid">
+      <div class="distortion-card">
+        <div class="d-name">Catastrophizing</div>
+        <p class="d-body">Assuming the worst possible outcome. Treating setbacks as disasters.</p>
+        <div class="d-example">"everything is ruined" · "it's hopeless" · "this is the worst"</div>
+      </div>
+      <div class="distortion-card">
+        <div class="d-name">Black & White Thinking</div>
+        <p class="d-body">Seeing things in absolutes with no middle ground.</p>
+        <div class="d-example">"I always fail" · "nobody cares" · "everything is wrong"</div>
+      </div>
+      <div class="distortion-card">
+        <div class="d-name">Mind Reading</div>
+        <p class="d-body">Assuming you know what others think, usually negatively.</p>
+        <div class="d-example">"they think I'm stupid" · "she hates me" · "nobody cares"</div>
+      </div>
+      <div class="distortion-card">
+        <div class="d-name">Self Blame</div>
+        <p class="d-body">Taking personal responsibility for things outside your control.</p>
+        <div class="d-example">"it's my fault" · "I ruined everything" · "because of me"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">The pipeline</div>
+    <h2>How the technology works</h2>
+    <p>CognitivePrint runs a multi stage NLP pipeline on every journal entry, combining linguistic feature extraction, deep learning emotion classification, and graph theoretic pattern detection.</p>
+    <div class="tech-stack">
+      <div class="tech-row"><span class="tech-name">spaCy</span><span class="tech-desc">Extracts linguistic features — entities, POS tags, dependency parse trees</span></div>
+      <div class="tech-row"><span class="tech-name">RoBERTa</span><span class="tech-desc">Fine-tuned transformer model classifies emotion into 7 categories with confidence scoring</span></div>
+      <div class="tech-row"><span class="tech-name">Distortion detector</span><span class="tech-desc">Rule-based lexical classifier flags 4 cognitive distortion patterns</span></div>
+      <div class="tech-row"><span class="tech-name">NetworkX</span><span class="tech-desc">Builds a time-series graph where each entry is a node connected to adjacent entries</span></div>
+      <div class="tech-row"><span class="tech-name">BFS traversal</span><span class="tech-desc">Detects when distortion patterns cluster or worsen across consecutive entries</span></div>
+      <div class="tech-row"><span class="tech-name">Health index</span><span class="tech-desc">Composite 0–100 score: 60% distortion frequency + 40% negative sentiment rate</span></div>
+      <div class="tech-row"><span class="tech-name">D3.js</span><span class="tech-desc">Force-directed graph visualization with live node bloom animation</span></div>
+      <div class="tech-row"><span class="tech-name">Flask</span><span class="tech-desc">Python backend serving the NLP pipeline via REST API</span></div>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <h3>Try it yourself</h3>
+    <p>Write one journal entry and see what the pipeline finds in under 10 seconds.</p>
+    <a href="journal.html" class="btn">▶ &nbsp;Start journaling</a>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span class="footer-logo">Cognitive<em>Print</em></span>
+  <span>Built with spaCy · RoBERTa · NetworkX · D3.js · Flask</span>
+</div>
+
+</body>
+</html>
